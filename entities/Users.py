@@ -1,6 +1,10 @@
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
+<<<<<<< HEAD
+=======
+from sqlalchemy.orm import relationship
+>>>>>>> 561e94f (MVP version 1)
 from database.core import Base
 
 
@@ -13,5 +17,13 @@ class User(Base):
     role = Column(String, nullable=False)
     password_hash = Column(String, nullable=False)
 
+<<<<<<< HEAD
     def __repr__(self):
         return f"<User(email='{self.email}', role = '{self.role}')>"
+=======
+    # patient = relationship("Patients",back_populates="user",uselist=False)
+    # doctor = relationship("Doctor",back_populates="user",uselist=False)
+
+    # def __repr__(self):
+    #     return f"<User(email='{self.email}', role = '{self.role}')>"
+>>>>>>> 561e94f (MVP version 1)

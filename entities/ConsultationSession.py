@@ -16,7 +16,11 @@ class SessionStatus(str, enum.Enum):
     ongoing = 'ongoing'
     completed = 'completed'
     cancelled = 'cancelled'
+<<<<<<< HEAD
     now_show = 'now_show'
+=======
+    no_show = 'no_show'
+>>>>>>> 561e94f (MVP version 1)
 
 
 class ConsultationSession(Base):
