@@ -222,6 +222,10 @@ yarl==1.22.0
 zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1749421620841/work
 zstandard==0.25.0
 
+<<<<<<< HEAD
+=======
+# VibeVoice TTS
+>>>>>>> 561e94f (MVP version 1)
 sentencepiece
 datasets
 soundfile
@@ -230,3 +234,7 @@ resampy
 websockets
 pydub
 
+<<<<<<< HEAD
+=======
+# Run this manually BEFORE starting the server:
+>>>>>>> 561e94f (MVP version 1)

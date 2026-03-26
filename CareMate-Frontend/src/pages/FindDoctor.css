@@ -1,0 +1,128 @@
+.finder-steps {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+}
+
+.finder-step {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--bg-input);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+}
+
+.finder-step.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.finder-step.active .step-num {
+    background: var(--primary);
+    color: #fff;
+}
+
+.facility-card,
+.doctor-card {
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.facility-card:hover,
+.doctor-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.facility-type {
+    display: inline-block;
+    margin-top: 4px;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.facility-addr {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+}
+
+.slot-btn {
+    padding: 14px 12px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 2px solid;
+    position: relative;
+}
+
+.slot-btn.available {
+    background: #f0fdf4;
+    border-color: #86efac;
+    color: #166534;
+}
+
+.slot-btn.available:hover:not(:disabled) {
+    background: #dcfce7;
+    border-color: #22c55e;
+    transform: translateY(-1px);
+}
+
+.slot-btn.booked {
+    background: var(--bg-input);
+    border-color: var(--border);
+    color: var(--text-light);
+    cursor: not-allowed;
+}
+
+.slot-tag {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--danger);
+    font-weight: 700;
+    margin-top: 2px;
+}
+/* Past slots */
+.slot-btn.past {
+    background: #f8fafc;
+    color: #94a3b8;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+    opacity: 0.6;
+    text-decoration: line-through;
+}

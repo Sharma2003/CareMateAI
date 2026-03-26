@@ -8,8 +8,13 @@ from consultation_notes.model import ConsultationNoteResponse, ConsultationNoteC
 from consultation_notes.service import write_notes
 
 router = APIRouter(
+<<<<<<< HEAD
     prefix="/cousltation-notes",
     tags=["Cosnultation-Notes"]
+=======
+    prefix="/consltation-notes",
+    tags=["consultation-notes"]
+>>>>>>> 561e94f (MVP version 1)
 )
 
 @router.post("/write-notes",response_model=ConsultationNoteResponse)
