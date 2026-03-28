@@ -102,35 +102,52 @@ LangGraph uses Redis for conversation state checkpointing. Background tasks (AI 
 
 ## Environment Variables
 
-Create a `.env` file in the project root before running anything:
+Your `.env` file stays exactly as-is — it works for both local dev and Docker. Docker Compose overrides only the `localhost`-based URLs at runtime using the `environment` block, so services resolve each other by their Docker network hostnames (`db`, `redis`, `ollama`) without you changing anything in `.env`.
 
 ```env
-# Database
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_strong_password_here
-POSTGRES_DB=mydb
-DATABASE_URL=postgresql://postgres:your_strong_password_here@db:5432/mydb
-
-# JWT
-SECRET_KEY=generate_a_long_random_hex_string_here
+DATABASE_URL=postgresql://postgres:Bsshr%4017182003@localhost:5432/mydb
+SECRET_KEY=f9ddac2ad14f8db79efc67215c392d4092eb5464993a30ef01c26c8f77ab72a7
 ALGORITHM=HS256
-
-# Redis (resolved inside Docker network)
-REDIS_URL=redis://redis:6379/0
-
-# HuggingFace (for SpeechT5 speaker embeddings)
-HF_TOKEN=hf_your_token_here
-
-# AssemblyAI (real-time STT)
-ASSEMBLYAI_API_KEY=your_assemblyai_key_here
+REDIS_URL=redis://localhost:6380/0
+HF_TOKEN=hf_...
+VIBEVOICE_MODEL=microsoft/VibeVoice-1.5B
+ASSEMBLYAI_API_KEY=...
 ```
+
+What Docker Compose overrides per service at runtime:
+
+| Service | Variable | `.env` value | Docker override |
+|---|---|---|---|
+| `web`, `worker` | `DATABASE_URL` | `...@localhost:5432/...` | `...@db:5432/...` |
+| `web`, `worker` | `REDIS_URL` | `redis://localhost:6380/0` | `redis://redis:6379/0` |
+
+Everything else (`SECRET_KEY`, `HF_TOKEN`, `ASSEMBLYAI_API_KEY`, etc.) is loaded directly from `.env` unchanged.
 
 > **Never commit `.env` to version control.** It is already listed in `.gitignore`.
 
-To generate a strong `SECRET_KEY`:
-```bash
-python -c "import secrets; print(secrets.token_hex(32))"
+### One code fix required for the RQ Worker
+
+`rq_worker/queues.py` and `rq_worker/worker.py` currently hardcode the Redis connection instead of reading from the environment. Update both files so Docker works correctly:
+
+**`rq_worker/queues.py`** — replace the hardcoded `Redis(...)` with:
+```python
+import os
+from redis import Redis
+
+redis_conn = Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6380/0"),
+                            decode_responses=False)
 ```
+
+**`rq_worker/worker.py`** — same change:
+```python
+import os
+from redis import Redis
+
+redis_conn = Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6380/0"),
+                            decode_responses=False)
+```
+
+After this fix the worker reads `REDIS_URL` from the environment — `localhost:6380` when run locally, and `redis:6379` (the Docker service) when run in the container.
 
 ---
 
@@ -138,7 +155,20 @@ python -c "import secrets; print(secrets.token_hex(32))"
 
 This is the recommended way to run the full stack.
 
-### 1. Build and start all services
+### 1. Clone the repository
+
+```bash
+git clone <your-repo-url> caremate
+cd caremate
+```
+
+If you already have the repo and just want the latest changes:
+
+```bash
+git pull origin main
+```
+
+### 2. Build and start all services
 
 ```bash
 docker compose up --build
