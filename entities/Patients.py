@@ -18,10 +18,9 @@ class Patient(Base):
     maritalStatus = Column(String,nullable=False)
     emergencyContactName = Column(String)
     emergencyContactPhone = Column(String)
-<<<<<<< HEAD
+
     user = relationship("User",backref="patientProfile")
-=======
 
     # user = relationship("Users",back_populates="patient")
 
->>>>>>> 561e94f (MVP version 1)
+
