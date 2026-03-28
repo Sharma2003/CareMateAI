@@ -1,26 +1,6 @@
 from pydantic import BaseModel, field_validator, model_validator
 from uuid import UUID
 from datetime import time, date, datetime
-<<<<<<< HEAD
-from zoneinfo import ZoneInfo
-from typing import Optional
-from entities.Booking import BookingStatus
-
-class bookingSlots(BaseModel):
-    booking_date : date
-    start_ts : time
-    end_ts : time    
-    status : BookingStatus = BookingStatus.BOOKED
-
-    @model_validator(mode='after')
-    def validate_time_order(self):
-        if self.end_ts <= self.start_ts:
-            raise ValueError("end_ts must be greater than start_ts")
-    
-        return self
-
-class bookingSlotsResponse(BaseModel):
-=======
 from typing import Optional
 from entities.Booking import BookingStatus
 
@@ -59,7 +39,6 @@ class BookingStatusUpdate(BaseModel):
 
 class BookingResponse(BaseModel):
     """Response schema for a booking."""
->>>>>>> 561e94f (MVP version 1)
     id: UUID
     doctor_id: UUID
     patient_id: UUID
@@ -67,11 +46,6 @@ class BookingResponse(BaseModel):
     start_ts: datetime
     end_ts: datetime
     status: BookingStatus
-<<<<<<< HEAD
-
-    model_config = {"from_attributes": True}
-    
-=======
     patient_name: Optional[str] = None
     # Consultation timing
     consultation_start_ts: Optional[datetime] = None
@@ -81,4 +55,3 @@ class BookingResponse(BaseModel):
     has_prescription: Optional[bool] = None
 
     model_config = {"from_attributes": True}
->>>>>>> 561e94f (MVP version 1)

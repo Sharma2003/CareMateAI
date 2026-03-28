@@ -1,27 +1,8 @@
-<<<<<<< HEAD
-from pydantic import BaseModel, EmailStr, Field
-=======
 from pydantic import BaseModel, Field
->>>>>>> 561e94f (MVP version 1)
 from uuid import UUID
 from datetime import date
 from typing import Annotated, Optional, Literal
 
-<<<<<<< HEAD
-class DoctorDetails(BaseModel):
-    first_name : Annotated[str,Field(min_length=1,max_length=20)]
-    last_name : Annotated[str,Field(min_length=1, max_length=20)]
-    gender : Optional[Literal['male','female','others']]
-    DOB : date
-    phoneNo : str
-    YOE : int
-
-class DoctorProfileResponse(DoctorDetails):
-    id : UUID
-    email : EmailStr
-    userid : str
-
-=======
 
 class DoctorProfileDetails(BaseModel):
     first_name: Annotated[str, Field(min_length=1, max_length=20)]
@@ -60,4 +41,3 @@ class DoctorProfileUpdate(BaseModel):
     specialization: str | None = None
     degree: str | None = None
     certificate_number: str | None = None
->>>>>>> 561e94f (MVP version 1)

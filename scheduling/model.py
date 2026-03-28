@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-
-from pydantic import BaseModel, field_validator
-from uuid import UUID
-from datetime import time
-
-class doctorAvailability(BaseModel):
-=======
 from pydantic import BaseModel, field_validator, model_validator
 from uuid import UUID
 from datetime import time
@@ -55,15 +47,12 @@ class DoctorAvailabilityCreate(BaseModel):
 
 class DoctorAvailabilityUpdate(BaseModel):
     """Schema for updating an existing doctor availability schedule."""
->>>>>>> 561e94f (MVP version 1)
     day_of_week: int
     start_time: time
     end_time: time
     slot_duration_minutes: int
     is_active: bool
 
-<<<<<<< HEAD
-=======
     @field_validator("day_of_week")
     @classmethod
     def validate_day_of_week(cls, v):
@@ -78,24 +67,10 @@ class DoctorAvailabilityUpdate(BaseModel):
             raise ValueError("slot_duration_minutes must be between 5 and 120")
         return v
 
->>>>>>> 561e94f (MVP version 1)
     @field_validator("start_time", "end_time", mode="before")
     @classmethod
     def parse_time(cls, v):
         if isinstance(v, str):
-<<<<<<< HEAD
-            h, m = map(int, v.split(":"))
-            return time(h, m)
-        return v
-
-
-
-
-class doctorAvailabilityResponse(doctorAvailability):
-    id : UUID
-    facility_id : UUID
-    doctor_id : UUID
-=======
             parts = v.split(":")
             h, m = int(parts[0]), int(parts[1])
             return time(h, m)
@@ -122,7 +97,6 @@ class DoctorAvailabilityResponse(BaseModel):
     end_time: time
     slot_duration_minutes: int
     is_active: bool
->>>>>>> 561e94f (MVP version 1)
 
     class Config:
         from_attributes = True

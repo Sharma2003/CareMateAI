@@ -12,10 +12,7 @@ class ReportMaster(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     patient_id = Column(UUID(as_uuid=True), nullable=False)
     doctor_id = Column(UUID(as_uuid=True), nullable=False)
-
-
     booking_id = Column(UUID(as_uuid=True), nullable=False)
-
 
     job_status = Column(String, nullable=False, default="processing")
 
@@ -34,3 +31,4 @@ class ReportMaster(Base):
         uselist=False,
         cascade='all, delete-orphan'
         )
+    

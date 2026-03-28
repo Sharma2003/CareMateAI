@@ -6,10 +6,7 @@ from doctorFinder.model import FacilityItem, DoctorItem
 from helper.slot_generator import slot_generator
 import logging
 from uuid import UUID
-<<<<<<< HEAD
-=======
 from datetime import date
->>>>>>> 561e94f (MVP version 1)
 
 
 def list_facilities(db: Session) -> list[FacilityItem]:
@@ -36,11 +33,6 @@ def list_doctors_by_facility(db: Session, facility_id: str) -> list[DoctorItem]:
     return [DoctorItem.model_validate(d, from_attributes=True) for d in doctors]
 
 
-<<<<<<< HEAD
-def list_doctor_slots(db: Session, doctor_id: UUID):
-
-    slots = slot_generator(db=db, current_user=doctor_id)
-=======
 def list_doctor_slots(
     db: Session,
     doctor_id: UUID,
@@ -53,5 +45,4 @@ def list_doctor_slots(
         target_date=target_date,
         facility_id=facility_id,
     )
->>>>>>> 561e94f (MVP version 1)
     return slots

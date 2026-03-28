@@ -19,8 +19,5 @@ class Patient(Base):
     emergencyContactName = Column(String)
     emergencyContactPhone = Column(String)
 
-    user = relationship("User",backref="patientProfile")
-
     # user = relationship("Users",back_populates="patient")
-
 

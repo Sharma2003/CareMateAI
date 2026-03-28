@@ -1,18 +1,10 @@
-<<<<<<< HEAD
-from fastapi import APIRouter, HTTPException
-=======
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
->>>>>>> 561e94f (MVP version 1)
 
 from database.core import DbSession
 from auth.service import CurrentUser
 from helper.ensure import ensure_patient_role, ensure_doctor_role
-<<<<<<< HEAD
-from report.service import get_patient_report, get_doctor_report
-=======
 from report.service import get_patient_report, get_doctor_report, search_patients_for_doctor, get_patient_reports_for_doctor
->>>>>>> 561e94f (MVP version 1)
 
 
 router = APIRouter(
@@ -22,16 +14,6 @@ router = APIRouter(
 
 
 @router.get("/patient-report")
-<<<<<<< HEAD
-def get_report(db:DbSession,current_user:CurrentUser):
-    ensure_patient_role(db=db,current_user=current_user.get_uuid())
-    return get_patient_report(db=db,patient_id=current_user.get_uuid())
-
-@router.get("/doctor-report")
-def get_report(db:DbSession, current_user : CurrentUser):
-    ensure_doctor_role(db=db,current_user=current_user.get_uuid())
-    return get_doctor_report(db=db, doctor_id=current_user.get_uuid())
-=======
 def get_report(db: DbSession, current_user: CurrentUser):
     ensure_patient_role(db=db, current_user=current_user.get_uuid())
     return get_patient_report(db=db, patient_id=current_user.get_uuid())
@@ -64,4 +46,3 @@ def get_patient_all_reports(
     ensure_doctor_role(db=db, current_user=current_user.get_uuid())
     return get_patient_reports_for_doctor(db=db, doctor_id=current_user.get_uuid(), patient_id=patient_id)
 
->>>>>>> 561e94f (MVP version 1)

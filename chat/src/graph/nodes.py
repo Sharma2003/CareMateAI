@@ -10,11 +10,7 @@ from core.prompts import (INTERVIEW_PROMPT,
                           REPORT_WRITE_INSTRUCTION_FOR_DOCTOR)
 
 from chat.src.utils.transcripts import build_interview_transcript
-<<<<<<< HEAD
-from langchain.messages import AIMessage, SystemMessage, HumanMessage
-=======
 from langchain_core.messages import AIMessage, SystemMessage, HumanMessage
->>>>>>> 561e94f (MVP version 1)
 
 import re
 import time
@@ -104,11 +100,7 @@ async def doctor_update_report(state: InterviewReport):
                         </task_instructions>
                         """)
     
-<<<<<<< HEAD
-    raw = await asyncio.to_thread(medgemma_get_text_response,[sys, user],max_new_tokens=512)
-=======
     raw = await asyncio.to_thread(medgemma_get_text_response,[sys, user],max_new_tokens=768)
->>>>>>> 561e94f (MVP version 1)
 
     cleaned = re.sub(r"<unused94>.*?</unused95>", "", raw, flags=re.DOTALL).strip()
     m = re.match(r"^\s*```(?:markdown)?\s*(.*?)\s*```\s*$", cleaned, flags=re.DOTALL | re.IGNORECASE)

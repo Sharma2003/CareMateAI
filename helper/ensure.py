@@ -14,11 +14,7 @@ def ensure_patient_role(db : Session, current_user : UUID):
     
     return user 
 
-<<<<<<< HEAD
-def ensure_doctor_role(db : Session, current_user : UUID):
-=======
 def ensure_doctor_role(db : Session, current_user:UUID):
->>>>>>> 561e94f (MVP version 1)
     user = db.query(User).filter(User.id == current_user).first()
     if not user:
         raise HTTPException(status_code=404, detail="User Not Found")

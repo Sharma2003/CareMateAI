@@ -15,16 +15,9 @@ class Doctor(Base):
     DOB = Column(Date)
     phoneNo = Column(String, nullable=False)
     YOE = Column(INTEGER,nullable=False)
-<<<<<<< HEAD
-    
-    user = relationship("User",backref="doctorProfile")
-    def __repr__(self):
-        return f"<User(profileCompleted='{self.profileCompleted}', first_name = '{self.first_name}', last_name = '{self.last_name}')>"
-=======
     specialization = Column(String, nullable=True)
     degree = Column(String, nullable=True)
     certificate_number = Column(String, nullable=True)
     
     # user = relationship("Users",back_populates="doctor")
     # facility = relationship("FacilityMaster",back_populates="doctor", cascade="all, delete-orphan")
->>>>>>> 561e94f (MVP version 1)

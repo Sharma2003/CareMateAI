@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/stt", tags=["stt"])
 
-API_KEY     = os.getenv("ASSEMBLYAI_API_KEY")
+API_KEY     = os.getenv("ASSEMBLYAI_API_KEY", "019fac938f8b4d64866c9e87eaea219b")
 SAMPLE_RATE = 16_000
 AAI_WS_URL  = (
     f"wss://streaming.assemblyai.com/v3/ws"

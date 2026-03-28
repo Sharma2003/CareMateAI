@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> 561e94f (MVP version 1)
 from typing import Annotated, List, TypedDict, Literal, Dict
 from uuid import UUID
 from pydantic import BaseModel
@@ -15,12 +11,8 @@ class InterviewState(TypedDict):
 class PatientChatRequest(BaseModel):
     messages : str
     thread_id : UUID 
-<<<<<<< HEAD
-    doctor_id : UUID
-=======
     doctor_id : UUID | None = None 
     booking_id : UUID | None = None
->>>>>>> 561e94f (MVP version 1)
     status : Literal["chatting","done"] = "chatting"
 
 
