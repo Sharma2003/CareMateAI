@@ -1,28 +1,63 @@
+name: caremate
+
 services:
+
+  # ── FastAPI Backend ──────────────────────────────────────────────────────────
+  # Pull pre-built image from private Docker Hub repo.
+  # To rebuild and push:  docker compose build web && docker compose push web
   web:
-    build: .
-    container_name: fastapi_app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    image: sharma2003/caremate-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: caremate_api
+    restart: unless-stopped
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
-      - .:/app
-    env_file:
-      - .env
+      - uploads_data:/app/uploads
+    environment:
+      DATABASE_URL: postgresql://postgres:Bsshr%4017182003@db:5432/CareMate-DB
+      REDIS_URL: redis://redis:6379/0
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - caremate_net
 
+  # ── RQ Worker ────────────────────────────────────────────────────────────────
+  worker:
+    image: sharma2003/caremate-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: caremate_worker
+    restart: unless-stopped
+    command: python -m rq_worker.worker
+    environment:
+      DATABASE_URL: postgresql://postgres:Bsshr%4017182003@db:5432/CareMate-DB
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - caremate_net
+
+  # ── PostgreSQL 16 ─────────────────────────────────────────────────────────────
   db:
-    image: postgres:16
-    container_name: db
-    restart: always
+    image: postgres:16-alpine
+    container_name: caremate_db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Bsshr@17182003
-      POSTGRES_DB: mydb
+      POSTGRES_DB: CareMate-DB
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -30,6 +65,54 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - caremate_net
 
+  # ── Redis 7 ───────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: caremate_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - caremate_net
+
+  # ── Ollama (MedGemma 27B) ─────────────────────────────────────────────────────
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: caremate_ollama
+  #   restart: unless-stopped
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #   # Uncomment on Linux + NVIDIA Container Toolkit for GPU passthrough:
+  #   # deploy:
+  #   #   resources:
+  #   #     reservations:
+  #   #       devices:
+  #   #         - driver: nvidia
+  #   #           count: all
+  #   #           capabilities: [gpu]
+  #   networks:
+  #     - caremate_net
+
+# ── Named Volumes ──────────────────────────────────────────────────────────────
 volumes:
   postgres_data:
+  redis_data:
+  uploads_data:
+  # ollama_data:
+
+# ── Network ────────────────────────────────────────────────────────────────────
+networks:
+  caremate_net:
+    driver: bridge

@@ -1,24 +1,17 @@
 # rq_worker/worker.py
 
-import sys, os
-
-# Add project root to Python path (CRITICAL FIX)
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+import os
 from rq import Queue, SimpleWorker
 from redis import Redis
 
-redis_conn = Redis(
-    host="localhost",
-    port=6380,
-    db=0,
-    decode_responses=False
-)
+redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
+
+redis_conn = Redis.from_url(redis_url)
 
 listen = ["report-generation"]
 
 if __name__ == "__main__":
-    
+
     queues = [Queue(name, connection=redis_conn) for name in listen]
     worker = SimpleWorker(queues, connection=redis_conn)
     worker.work()

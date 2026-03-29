@@ -9,7 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-ASSEMBLYAI_API_KEY = os.getenv("ASSEMBLYAI_API_KEY", "019fac938f8b4d64866c9e87eaea219b")
+ASSEMBLYAI_API_KEY = os.getenv("ASSEMBLYAI_API_KEY")
 
 
 def warm_up_stt():
