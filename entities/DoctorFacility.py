@@ -13,8 +13,8 @@ class DoctorAvailability(Base):
     __tablename__ = "doctor_availability"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    facility_id = Column(UUID(as_uuid=True), ForeignKey(Facility.id))
-    doctor_id = Column(UUID(as_uuid=True), ForeignKey(Doctor.id))
+    facility_id = Column(UUID(as_uuid=True), ForeignKey("facility.id"))
+    doctor_id = Column(UUID(as_uuid=True), ForeignKey("doctors.id"))
     day_of_week = Column(SmallInteger, nullable=False)
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)

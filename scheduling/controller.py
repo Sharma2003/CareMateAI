@@ -10,7 +10,7 @@ from scheduling.service import (
     create_doctor_schedule,
     get_doctor_availability,
     update_doctor_availability,
-    delete_doctor_availability,
+    # delete_doctor_availability,
 )
 from helper.ensure import ensure_doctor_role, ensure_doctor_facility
 from uuid import UUID
@@ -55,13 +55,13 @@ def update_availability(
     return update_doctor_availability(db=db, facility_id=facility_id, payload=payload)
 
 
-@router.delete("/{scheduling_id}")
-def delete_availability(
-    db: DbSession,
-    scheduling_id: UUID,
-    current_user: CurrentUser,
-):
-    ensure_doctor_role(db=db, current_user=current_user.get_uuid())
-    return delete_doctor_availability(
-        db=db, doctor_id=current_user.get_uuid(), scheduling_id=scheduling_id
-    )
+# @router.delete("/{scheduling_id}")
+# def delete_availability(
+#     db: DbSession,
+#     scheduling_id: UUID,
+#     current_user: CurrentUser,
+# ):
+#     ensure_doctor_role(db=db, current_user=current_user.get_uuid())
+#     return delete_doctor_availability(
+#         db=db, doctor_id=current_user.get_uuid(), scheduling_id=scheduling_id
+#     )

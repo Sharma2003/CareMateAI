@@ -4,6 +4,7 @@ from langgraph.checkpoint.redis.aio import AsyncRedisSaver
 from langchain_core.messages import HumanMessage, AIMessage
 from dotenv import load_dotenv
 import os
+from rq import Retry
 
 from helper.chatStore import strcuting_chat
 from chat.src.graph.state import PatientChatRequest
@@ -72,6 +73,10 @@ async def next_message(req: PatientChatRequest, current_user: CurrentUser):
             str(doctor_id),
             state,
             str(booking_id),
+            retry=Retry(max=3, interval=[10, 30, 60]),
+            job_timeout=600,
+            result_ttl=5000,
+            failure_ttl=86400,
         )
 
     return {

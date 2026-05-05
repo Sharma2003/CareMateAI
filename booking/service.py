@@ -2,8 +2,11 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from uuid import UUID
 import logging
+from sqlalchemy import or_, cast, String, and_, func, Time
 
 from entities.Booking import Booking
+from entities.Patients import Patient
+from entities.FacilityMaster import Facility
 from entities.DoctorFacility import DoctorAvailability
 from booking.model import BookingCreate, BookingResponse
 from datetime import datetime, date
@@ -137,7 +140,9 @@ def book_appointment(
         )
         .first()
     )
-
+    print(start_ts)
+    slot_duration = int((end_ts - start_ts).total_seconds() / 60)
+    print(slot_duration)
     if overlapping:
         raise HTTPException(status_code=400, detail="Time slot already booked")
 
@@ -147,7 +152,9 @@ def book_appointment(
         patient_id=currentUser,
         start_ts=start_ts,
         end_ts=end_ts,
+        slot_duration=slot_duration
     )
+    
 
     db.add(booking_appointment)
     db.commit()
@@ -204,10 +211,10 @@ def get_doctor_appointments(db: Session, doctor_id: UUID):
     return responses
 
 
-def update_booking_status(db: Session, booking_id: UUID, doctor_id: UUID, payload):
-    from booking.model import BookingStatusUpdate, BookingResponse
-    from entities.Prescription import Prescription
-    from datetime import datetime
+# def update_booking_status(db: Session, booking_id: UUID, doctor_id: UUID, payload):
+#     from booking.model import BookingStatusUpdate, BookingResponse
+#     from entities.Prescription import Prescription
+#     from datetime import datetime
 
 def update_booking_status(db: Session, booking_id: UUID, doctor_id: UUID, payload):
     from booking.model import BookingStatusUpdate, BookingResponse
@@ -251,3 +258,92 @@ def update_booking_status(db: Session, booking_id: UUID, doctor_id: UUID, payloa
     pres = db.query(Prescription).filter(Prescription.booking_id == booking_id).first()
     resp.has_prescription = pres is not None
     return resp
+
+
+def search_appointments_for_doctor(db:Session, doctor_id:UUID, querry:str):
+    facility_ids_from_booking = (
+         db.query(Booking.facility_id)
+         .filter(Booking.doctor_id == doctor_id)
+         .distinct()
+         .subquery()
+     )
+    
+    base_q = db.query(
+        Facility.id,
+        Facility.facilityName,
+        Facility.facilityType,
+        Facility.postalCode
+    ).filter(
+            Facility.id.in_(facility_ids_from_booking)
+    )
+
+    if querry:
+        q_like= f"%{querry.lower()}%"
+        base_q = base_q.filter(
+            or_(
+                Facility.facilityName.ilike(q_like),
+                Facility.facilityType.ilike(q_like),
+                cast(Facility.postalCode,String).ilike(q_like),
+                cast(Facility.id,String).ilike(q_like)
+            )
+        )
+
+    rows = base_q.all()
+
+    return [
+        {
+            "facilityID" : str(r.id),
+            "facilityName": r.facilityName,
+            "facilityType": r.facilityType,
+            "postalCode": r.postalCode
+        }
+        for r in rows
+    ]
+
+def get_all_patients_for_facility(
+    db: Session,
+    doctor_id: UUID,
+    facility_id: str
+):
+    from uuid import UUID as _UUID
+
+    try:
+        fid = _UUID(facility_id)
+    except ValueError:
+        return []
+
+    booking_rows = (
+        db.query(
+            Booking.id,
+            Patient.first_name,
+            Patient.last_name,
+            Booking.start_ts,
+            Booking.slot_duration,
+            Booking.consultation_duration_minutes,
+            Booking.status
+        )
+        .join(Patient, Patient.id == Booking.patient_id)
+        .filter(
+            Booking.doctor_id == doctor_id,
+            Booking.facility_id == fid
+        )
+        .order_by(Booking.start_ts)
+        .all()
+    )
+
+    return [
+    {
+        "booking_id": str(r.id),
+        "date_time": r.start_ts,
+        "slot": f"{r.slot_duration} min",
+        "patient": f"{r.first_name} {r.last_name}",
+        "consult_duration":
+            f"{r.consultation_duration_minutes} min"
+            if r.consultation_duration_minutes
+            else "Not started",
+        "status": r.status,
+        "action": "⚠ Awaiting AI chat"
+    }
+
+    for r in booking_rows
+]

@@ -1,5 +1,5 @@
 import uuid 
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -10,9 +10,9 @@ class ReportMaster(Base):
     __tablename__ = "report_master"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    patient_id = Column(UUID(as_uuid=True), nullable=False)
-    doctor_id = Column(UUID(as_uuid=True), nullable=False)
-    booking_id = Column(UUID(as_uuid=True), nullable=False)
+    patient_id = Column(ForeignKey("patients.id"), nullable=False)
+    doctor_id = Column(ForeignKey("doctors.id"), nullable=False)
+    booking_id = Column(ForeignKey("bookings.id", ondelete="RESTRICT"), nullable=False)
 
     job_status = Column(String, nullable=False, default="processing")
 

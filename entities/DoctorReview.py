@@ -12,9 +12,9 @@ class DoctorReview(Base):
     __tablename__ = "doctor_reviews"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    booking_id = Column(UUID(as_uuid=True), ForeignKey(Booking.id, ondelete="CASCADE"), unique=True, nullable=False)
-    doctor_id = Column(UUID(as_uuid=True), ForeignKey(Doctor.id, ondelete="CASCADE"), nullable=False)
-    patient_id = Column(UUID(as_uuid=True), ForeignKey(Patient.id, ondelete="CASCADE"), nullable=False)
+    booking_id = Column(UUID(as_uuid=True), ForeignKey("bookings.id", ondelete="RESTRICT"), unique=True, nullable=False)
+    doctor_id = Column(UUID(as_uuid=True), ForeignKey("doctors.id", ondelete="RESTRICT"), nullable=False)
+    patient_id = Column(UUID(as_uuid=True), ForeignKey("patients.id", ondelete="RESTRICT"), nullable=False)
     rating = Column(Integer, nullable=False)  # 1-5
     comment = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

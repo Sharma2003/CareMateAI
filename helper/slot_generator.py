@@ -60,9 +60,13 @@ def slot_generator(
     )
 
     # Build a set of booked start times for fast lookup
+    from zoneinfo import ZoneInfo
+    IST = ZoneInfo("Asia/Kolkata")
+    
     booked_start_times = set()
     for b in booked_slots:
-        booked_start_times.add(b.start_ts.strftime("%H:%M:%S"))
+        local_time = b.start_ts.astimezone(IST) if getattr(b.start_ts, 'tzinfo', None) else b.start_ts
+        booked_start_times.add(local_time.strftime("%H:%M:%S"))
 
     slots = []
     for avail in availabilities:

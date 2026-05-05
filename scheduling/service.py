@@ -123,21 +123,21 @@ def update_doctor_availability(
     return DoctorAvailabilityResponse.model_validate(schedule)
 
 
-def delete_doctor_availability(db: Session, doctor_id: UUID, scheduling_id: UUID) -> dict:
-    schedule = (
-        db.query(DoctorAvailability)
-        .filter(
-            DoctorAvailability.id == scheduling_id,
-            DoctorAvailability.doctor_id == doctor_id,
-        )
-        .first()
-    )
-    if not schedule:
-        raise HTTPException(status_code=404, detail="Schedule not found")
-    try:
-        db.delete(schedule)
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code=400, detail="Schedule cannot be deleted")
-    return {"message": "Doctor availability deleted successfully"}
+# def delete_doctor_availability(db: Session, doctor_id: UUID, scheduling_id: UUID) -> dict:
+#     schedule = (
+#         db.query(DoctorAvailability)
+#         .filter(
+#             DoctorAvailability.id == scheduling_id,
+#             DoctorAvailability.doctor_id == doctor_id,
+#         )
+#         .first()
+#     )
+#     if not schedule:
+#         raise HTTPException(status_code=404, detail="Schedule not found")
+#     try:
+#         db.delete(schedule)
+#         db.commit()
+#     except IntegrityError:
+#         db.rollback()
+#         raise HTTPException(status_code=400, detail="Schedule cannot be deleted")
+#     return {"message": "Doctor availability deleted successfully"}

@@ -45,4 +45,3 @@ def get_patient_all_reports(
     """Get all reports for a specific patient (doctor view)."""
     ensure_doctor_role(db=db, current_user=current_user.get_uuid())
     return get_patient_reports_for_doctor(db=db, doctor_id=current_user.get_uuid(), patient_id=patient_id)
-

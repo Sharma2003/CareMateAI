@@ -53,9 +53,7 @@ Follow this order naturally. Do not label sections out loud — keep it conversa
 
 ### Procedure ###
 1. START: Open with this exact message:
-   "Thank you for booking an appointment with your doctor. I am a clinical assistant
-   here to ask a few questions to help your doctor prepare for your visit.
-   To start — what is your main concern today?"
+   "Thank you for booking an appointment with your doctor. I am a clinical assistant here to ask a few questions to help your doctor prepare for your visit. To start — what is your main concern today?"
 
 2. CONDUCT: Follow the framework above, adapting to the patient's responses.
 
@@ -96,15 +94,14 @@ You are a medical documentation assistant generating a patient-readable intake s
 
 <task>
 Generate a clear, plain-language intake report for the patient based on the interview
-transcript and any available EHR data. This report will be shown to the patient,
-not the physician — keep language simple and avoid clinical jargon.
+transcript and any available EHR data.
 </task>
 
 <guiding_principles>
-- Use simple, clear language the patient can understand.
-- Be factual. Do not add diagnoses, opinions, or speculation.
-- Be concise. Do not pad with filler.
-- Only include information the patient actually provided.
+- Use simple language.
+- No diagnosis or speculation.
+- Be concise.
+- Only include provided information.
 </guiding_principles>
 
 <ehr_data>
@@ -112,43 +109,50 @@ not the physician — keep language simple and avoid clinical jargon.
 </ehr_data>
 
 <output_format>
-Return ONLY the Markdown report. No preamble, no commentary, no extra text.
-Use these exact headings:
+Return ONLY a valid JSON object. No extra text.
 
-# Your Intake Summary
-
-## What You Came In For
-## Your Symptoms
-## Medications You Mentioned
-## Allergies
-## Your Medical Background
-## Note
+{
+  "report_title": "Pre-Consultation Report - [brief summary]",
+  "report_summary": "4-5 sentence summary of patient symptoms and context.",
+  "status": "completed",
+  "source": "ai_interview",
+  "sections": [
+    {
+      "section_title": "Your Symptoms",
+      "section_order": 1,
+      "section_text": "Description of current symptoms."
+    },
+    {
+      "section_title": "Past Medical History",
+      "section_order": 2,
+      "section_text": "Relevant past conditions only."
+    },
+    {
+      "section_title": "Medications and Allergies",
+      "section_order": 3,
+      "section_text": "Medications and allergies or NKDA."
+    }
+  ],
+  "Note": "Your doctor will review this summary before the visit"
+}
 </output_format>
 """.strip()
 
 
-PATIENT_DEFAULT_REPORT_TEMPLATE = """
-# Your Intake Summary
+PATIENT_DEFAULT_REPORT_TEMPLATE = {
+    "report_title": "Pre-Consultation Report — Pending",
+    "report_summary": "GROQ WILL BE USED",
+    "status": "processing",
+    "next_follow_up": None,
+    "source": "ai_interview",
+    "sections" : [
+        {"section_title" : "You Symptoms", "section_order":1, "section_text" : None},
+        {"section_title" : "Past Medical History", "section_order":2, "section_text":None},
+        {"section_title" : "Medication and Allergies" , "section_order":3, "section_text":None}
+    ],
 
-## What You Came In For
-_To be completed after your interview._
-
-## Your Symptoms
-- _No information recorded yet._
-
-## Medications You Mentioned
-- _No medications recorded yet._
-
-## Allergies
-- _No allergies recorded yet._
-
-## Your Medical Background
-- _No history recorded yet._
-
-## Note
-Your doctor will review this summary before your visit.
-""".strip()
-
+    "Note" : "Your doctor will review this summary before the visit"
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # DOCTOR REPORT PROMPT  — JSON OUTPUT
@@ -205,7 +209,7 @@ The JSON must follow this exact schema:
     {{
       "section_title": "Chief Complaint",
       "section_order": 1,
-      "section_text": "One sentence. State the chief complaint and any medication taken before the visit."
+      "section_text": "two sentence. State the chief complaint and any medication taken before the visit."
     }},
     {{
       "section_title": "History of Present Illness",

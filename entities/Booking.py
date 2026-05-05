@@ -22,16 +22,17 @@ class Booking(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     doctor_id = Column(
-        UUID(as_uuid=True), ForeignKey(Doctor.id, ondelete="RESTRICT"), nullable=False
+        UUID(as_uuid=True), ForeignKey("doctors.id", ondelete="RESTRICT"), nullable=False
     )
     patient_id = Column(
-        UUID(as_uuid=True), ForeignKey(Patient.id, ondelete="RESTRICT"), nullable=False
+        UUID(as_uuid=True), ForeignKey("patients.id", ondelete="RESTRICT"), nullable=False
     )
     facility_id = Column(
-        UUID(as_uuid=True), ForeignKey(Facility.id, ondelete="RESTRICT"), nullable=False
+        UUID(as_uuid=True), ForeignKey("facility.id", ondelete="RESTRICT"), nullable=False
     )
     start_ts = Column(DateTime(timezone=True), nullable=False)
     end_ts = Column(DateTime(timezone=True), nullable=False)
+    slot_duration = Column(Integer,nullable=False)
     status = Column(Enum(BookingStatus), nullable=False, default=BookingStatus.BOOKED)
 
     # Consultation actual timing
@@ -49,10 +50,7 @@ class Booking(Base):
     session = relationship(
         "ConsultationSession", back_populates="booking", uselist=False
     )
-
-    # report_master = relationship("ReportMaster", 
-    #             back_populates="booking"
-    # )
+  
     __table_args__ = (
         UniqueConstraint(
             "doctor_id", "start_ts",

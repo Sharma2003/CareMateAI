@@ -31,24 +31,26 @@ langchain-community==0.4
 langchain-groq==1.0.0
 langchain-huggingface==1.0.0
 langchain-ollama==1.0.0
-langchain-text-splitters==1.0.0
+# langchain-text-splitters==1.0.0
 langgraph==1.0.5
 # langgraph-checkpoint==3.0.0
 # langgraph-checkpoint-postgres==3.0.2
 langgraph-checkpoint-redis==0.3.2
 # langsmith==0.4.38
-groq==0.33.0
-ollama==0.6.0
+# groq==0.33.0
+# ollama==0.6.0
 
 # ── AI — TTS (SpeechT5) ────────────────────────────────────────────────────────
-torch==2.3.1
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.3.1+cpu
 transformers==4.57.1
-accelerate==1.11.0
+# accelerate==1.11.0
 # datasets
 sentencepiece
 soundfile
-safetensors==0.6.2
-tokenizers==0.22.1
+# safetensors==0.6.2
+# tokenizers==0.22.1
 huggingface-hub==0.36.0
 
 # ── STT (AssemblyAI WebSocket proxy) ──────────────────────────────────────────

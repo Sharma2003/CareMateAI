@@ -8,7 +8,7 @@ from entities.Users import User
 class Patient(Base):
     __tablename__ = "patients"
 
-    id = Column(UUID(as_uuid=True), ForeignKey(User.id), primary_key=True)
+    id = Column(UUID(as_uuid=True), ForeignKey("users.id"), primary_key=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     gender = Column(String,nullable=False)
@@ -21,3 +21,6 @@ class Patient(Base):
 
     # user = relationship("Users",back_populates="patient")
 
+    # booking = relationship(
+    #     "Booking", back_populates="patient"
+    # )

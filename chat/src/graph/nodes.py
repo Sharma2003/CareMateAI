@@ -25,7 +25,7 @@ async def ask_question(state: InterviewState):
     start = time.time()
     system = SystemMessage(content=INTERVIEW_PROMPT)
     chat = [system] + state["messages"]
-    llm_out = medgemma_get_text_response(chat,max_new_tokens=180)
+    llm_out = medgemma_get_text_response(chat,max_new_tokens=512)
     
     end = time.time()
     q = llm_out.split("\n")[0].strip()

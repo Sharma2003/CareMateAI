@@ -68,3 +68,4 @@ def delete_facility(db: Session, facility_id: UUID) -> dict:
     db.commit()
 
     return {"message": "Facility deleted successfully", "facility_id": str(facility_id)}
+

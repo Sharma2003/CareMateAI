@@ -1,17 +1,23 @@
 # rq_worker/worker.py
 
 import os
-from rq import Queue, SimpleWorker
+from rq import Queue, Worker 
 from redis import Redis
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
 
+redis_url = os.getenv("REDIS_URL")
+if not redis_url:
+    raise ValueError("DB NOT DEFINED")
 redis_conn = Redis.from_url(redis_url)
 
-listen = ["report-generation"]
-
+# listen = ["report-generation"]
+queues = [Queue("report-generation", connection=redis_conn)]
 if __name__ == "__main__":
-
-    queues = [Queue(name, connection=redis_conn) for name in listen]
-    worker = SimpleWorker(queues, connection=redis_conn)
+    logger.info("Starting RQ worker...")
+     
+        
+    worker = Worker(queues, connection=redis_conn)
     worker.work()

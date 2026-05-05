@@ -140,7 +140,7 @@ def get_patient_reports_for_doctor(db: Session, doctor_id: UUID, patient_id: str
     try:
         pid = _UUID(patient_id)
     except ValueError:
-        return []
+        return ["Invalid"]
 
     reports = db.query(
         DoctorReport.report_md,
@@ -150,6 +150,7 @@ def get_patient_reports_for_doctor(db: Session, doctor_id: UUID, patient_id: str
         ReportMaster, DoctorReport.master_id == ReportMaster.id
     ).filter(
         ReportMaster.patient_id == pid,
+        ReportMaster.doctor_id == doctor_id
     ).order_by(ReportMaster.created_at.desc()).all()
 
     return [

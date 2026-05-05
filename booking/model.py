@@ -45,6 +45,7 @@ class BookingResponse(BaseModel):
     facility_id: UUID
     start_ts: datetime
     end_ts: datetime
+    slot_duration : int 
     status: BookingStatus
     patient_name: Optional[str] = None
     # Consultation timing

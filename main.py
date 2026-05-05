@@ -2,7 +2,7 @@ from auth.controller import router as auth_router
 from users.controller import router as user_router
 from patients.controller import router as patient_router
 from doctors.controller import router as doctor_router
-from database.core import Base, engine
+from database.core import engine
 from facilities.controller import router as facilites_router
 from scheduling.controller import router as scheduling_router
 from doctorFinder.controller import router as doctorFinder_router
@@ -32,7 +32,7 @@ import os, shutil, threading, logging
 
 logger = logging.getLogger(__name__)
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 
 def _warm_up_medgemma():
@@ -57,19 +57,25 @@ async def lifespan(app: FastAPI):
     background threads so both models are ready before the first user request.
     Neither thread blocks the server from accepting requests.
     """
-    t1 = threading.Thread(target=warm_up_speecht5, daemon=True, name="speecht5-warmup")
-    t2 = threading.Thread(target=_warm_up_medgemma, daemon=True, name="medgemma-warmup")
-    t3 = threading.Thread(target=warm_up_stt, daemon=True, name="stt-warmup")
-    t1.start()
-    t2.start()
-    t3.start()
-    logger.info("🚀 [startup] Model warm-up threads launched (SpeechT5 + MedGemma + KyutaiSTT).")
     yield
+    await engine.dispose()
+    # t1 = threading.Thread(target=warm_up_speecht5, daemon=True, name="speecht5-warmup")
+    # t2 = threading.Thread(target=_warm_up_medgemma, daemon=True, name="medgemma-warmup")
+    # t3 = threading.Thread(target=warm_up_stt, daemon=True, name="stt-warmup")
+    # t1.start()
+    # t2.start()
+    # t3.start()
+    # logger.info("🚀 [startup] Model warm-up threads launched (SpeechT5 + MedGemma + KyutaiSTT).")
+    # yield
     # shutdown — nothing special needed; threads are daemons
 
-
-app = FastAPI(lifespan=lifespan)
-
+PRODUCTION = os.getenv("ENV") == "prod"
+app = FastAPI(
+    lifespan=lifespan,
+    redoc_url=None if PRODUCTION else "/redoc",
+    docs_url=None if PRODUCTION else "/doc",
+    openapi_url=None if PRODUCTION else "/openapi.json",
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -110,8 +116,8 @@ app.include_router(documents_router)
 app.include_router(admin_router)
 app.include_router(drugs_router)
 app.include_router(reviews_router)
-app.include_router(tts_router)
-app.include_router(stt_router)
+# app.include_router(tts_router)
+# app.include_router(stt_router)s
 
 
 @app.post("/user/avatar")
